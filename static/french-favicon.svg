@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <clipPath id="bubble">
+      <path d="M14 8h36a8 8 0 0 1 8 8v24a8 8 0 0 1-8 8H31L17 59V48h-3a8 8 0 0 1-8-8V16a8 8 0 0 1 8-8Z"/>
+    </clipPath>
+  </defs>
+  <path fill="#263d74" d="M14 8h36a8 8 0 0 1 8 8v24a8 8 0 0 1-8 8H31L17 59V48h-3a8 8 0 0 1-8-8V16a8 8 0 0 1 8-8Z"/>
+  <g clip-path="url(#bubble)">
+    <path fill="#263d74" d="M6 8h18v40H6z"/>
+    <path fill="#fff" d="M24 8h16v40H24z"/>
+    <path fill="#d44d49" d="M40 8h18v40H40z"/>
+    <path fill="#263d74" d="M6 48h13L17 59 31 48z"/>
+  </g>
+</svg>

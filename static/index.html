@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f1e8">
+    <title>Parlez | French Transcription</title>
+    <link rel="icon" type="image/svg+xml" href="/french-favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <p class="eyebrow">FRENCH SPEECH TO TEXT</p>
+        <h1>Parlez.</h1>
+        <p class="intro">Record a thought in French. Your words will appear below.</p>
+      </header>
+
+      <section class="recorder" aria-labelledby="recorder-title">
+        <div class="recorder-heading">
+          <div>
+            <p class="section-label" id="recorder-title">RECORDER</p>
+            <p class="status" id="status" aria-live="polite">Ready to record</p>
+          </div>
+          <time id="timer">00:00</time>
+        </div>
+
+        <div class="record-zone">
+          <div class="pulse-ring">
+            <button class="record-button" id="record-button" type="button" aria-label="Start recording">
+              <span class="record-icon" aria-hidden="true"></span>
+              <span id="record-label">Record</span>
+            </button>
+          </div>
+          <p class="hint">Press once to start, then again to finish.</p>
+        </div>
+      </section>
+
+      <section class="transcript-section" aria-labelledby="transcript-title">
+        <div class="transcript-heading">
+          <div>
+            <p class="section-label">TRANSCRIPT</p>
+            <h2 id="transcript-title">What you said</h2>
+          </div>
+          <button class="copy-button" id="copy-button" type="button" disabled>Copy</button>
+        </div>
+        <textarea id="transcript" aria-label="French transcript" placeholder="Votre transcription apparaîtra ici..." readonly></textarea>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

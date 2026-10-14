@@ -1,0 +1,243 @@
+:root {
+  color-scheme: light;
+  --ink: #17201d;
+  --muted: #67706c;
+  --paper: #f5f1e8;
+  --surface: #fffdf8;
+  --line: #d8d2c7;
+  --red: #d7483e;
+  --red-dark: #af3029;
+  --green: #1f6953;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--ink);
+  background:
+    linear-gradient(rgba(23, 32, 29, 0.035) 1px, transparent 1px),
+    var(--paper);
+  background-size: 100% 32px;
+  font-family: "Manrope", sans-serif;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+.shell {
+  width: min(760px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 72px 0;
+}
+
+header {
+  margin-bottom: 48px;
+}
+
+.eyebrow,
+.section-label,
+time {
+  margin: 0;
+  color: var(--green);
+  font-family: "DM Mono", monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+h1 {
+  margin: 8px 0 10px;
+  font-size: clamp(3.5rem, 10vw, 6.25rem);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.intro {
+  max-width: 480px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.recorder,
+.transcript-section {
+  border-top: 1px solid var(--ink);
+}
+
+.recorder-heading,
+.transcript-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 18px 0;
+}
+
+.status {
+  margin: 5px 0 0;
+  font-size: 0.9rem;
+}
+
+time {
+  color: var(--ink);
+  font-size: 0.9rem;
+}
+
+.record-zone {
+  display: grid;
+  min-height: 290px;
+  place-items: center;
+  padding: 36px 24px 28px;
+  background: transparent;
+}
+
+.pulse-ring {
+  position: relative;
+  display: grid;
+  width: 152px;
+  height: 152px;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.pulse-ring::before {
+  position: absolute;
+  inset: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.record-button {
+  display: flex;
+  width: 120px;
+  height: 120px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: 50%;
+  color: white;
+  background: var(--red);
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.record-button:hover {
+  background: var(--red-dark);
+  transform: scale(1.03);
+}
+
+.record-button:focus-visible,
+.copy-button:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
+
+.record-icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.is-recording .pulse-ring::before {
+  border-color: color-mix(in srgb, var(--red) 35%, transparent);
+  animation: pulse 1.7s ease-out infinite;
+}
+
+.is-recording .record-icon {
+  border-radius: 2px;
+}
+
+.record-button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.hint {
+  align-self: end;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.transcript-section {
+  margin-top: 48px;
+}
+
+h2 {
+  margin: 5px 0 0;
+  font-size: 1.15rem;
+  letter-spacing: 0;
+}
+
+.copy-button {
+  padding: 8px 14px;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  color: var(--ink);
+  background: transparent;
+  cursor: pointer;
+}
+
+.copy-button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+textarea {
+  width: 100%;
+  min-height: 190px;
+  resize: vertical;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--ink);
+  background: var(--surface);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+textarea::placeholder {
+  color: #939994;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.92); opacity: 1; }
+  100% { transform: scale(1.22); opacity: 0; }
+}
+
+@media (max-width: 560px) {
+  .shell {
+    width: min(100% - 28px, 760px);
+    padding: 44px 0;
+  }
+
+  header {
+    margin-bottom: 36px;
+  }
+
+  .record-zone {
+    min-height: 260px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
