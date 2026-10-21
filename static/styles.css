@@ -66,12 +66,14 @@ h1 {
 }
 
 .recorder,
-.transcript-section {
+.transcript-section,
+.analysis-section {
   border-top: 1px solid var(--ink);
 }
 
 .recorder-heading,
-.transcript-heading {
+.transcript-heading,
+.analysis-heading {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -136,7 +138,7 @@ time {
 }
 
 .record-button:focus-visible,
-.copy-button:focus-visible,
+.action-button:focus-visible,
 textarea:focus-visible {
   outline: 3px solid var(--green);
   outline-offset: 3px;
@@ -174,13 +176,23 @@ textarea:focus-visible {
   margin-top: 48px;
 }
 
+.analysis-section {
+  margin-top: 56px;
+  scroll-margin-top: 24px;
+}
+
 h2 {
   margin: 5px 0 0;
   font-size: 1.15rem;
   letter-spacing: 0;
 }
 
-.copy-button {
+.transcript-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-button {
   padding: 8px 14px;
   border: 1px solid var(--ink);
   border-radius: 4px;
@@ -189,9 +201,57 @@ h2 {
   cursor: pointer;
 }
 
-.copy-button:disabled {
+.action-button:disabled {
   cursor: default;
   opacity: 0.35;
+}
+
+.analysis-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 14px;
+}
+
+.analysis-controls p,
+.analysis-status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.analysis-button {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  border: 1px solid var(--green);
+  border-radius: 4px;
+  color: white;
+  background: var(--green);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.analysis-button:hover:not(:disabled) {
+  background: #17513f;
+}
+
+.analysis-button:focus-visible {
+  outline: 3px solid var(--green);
+  outline-offset: 3px;
+}
+
+.analysis-button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.analysis-output {
+  min-height: 120px;
+  padding: 22px 0;
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+  line-height: 1.75;
 }
 
 textarea {
@@ -228,6 +288,21 @@ textarea::placeholder {
 
   .record-zone {
     min-height: 260px;
+  }
+
+  .transcript-heading {
+    gap: 16px;
+  }
+
+  .transcript-actions {
+    align-items: flex-end;
+    flex-direction: column;
+  }
+
+  .analysis-controls,
+  .analysis-heading {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 

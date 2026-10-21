@@ -1,5 +1,5 @@
 [project]
-name = "french-transcription"
+name = "parlez"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -8,6 +8,8 @@ dependencies = [
     "av<17",
     "fastapi>=0.143.0",
     "faster-whisper>=1.2.1",
+    "google-genai>=1.0.0",
+    "python-dotenv>=1.0.1",
     "python-multipart>=0.0.32",
     "uvicorn[standard]>=0.54.0",
 ]

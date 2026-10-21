@@ -45,9 +45,27 @@
             <p class="section-label">TRANSCRIPT</p>
             <h2 id="transcript-title">What you said</h2>
           </div>
-          <button class="copy-button" id="copy-button" type="button" disabled>Copy</button>
+          <div class="transcript-actions">
+            <button class="action-button" id="download-button" type="button" disabled>Download recording</button>
+            <button class="action-button" id="copy-button" type="button" disabled>Copy</button>
+          </div>
         </div>
-        <textarea id="transcript" aria-label="French transcript" placeholder="Votre transcription apparaîtra ici..." readonly></textarea>
+        <textarea id="transcript" aria-label="French transcript" placeholder="Votre transcription apparaîtra ici..."></textarea>
+        <div class="analysis-controls">
+          <p>Corrigez si nécessaire les erreurs de transcription avant de demander l'analyse.</p>
+          <button class="analysis-button" id="analyze-button" type="button" disabled>Analyser avec Gemini</button>
+        </div>
+      </section>
+
+      <section class="analysis-section" id="analysis-section" aria-labelledby="analysis-title" hidden>
+        <div class="analysis-heading">
+          <div>
+            <p class="section-label">COACH DELF B2</p>
+            <h2 id="analysis-title">Conseils pour votre prise de parole</h2>
+          </div>
+          <p class="analysis-status" id="analysis-status" aria-live="polite"></p>
+        </div>
+        <div class="analysis-output" id="analysis-output"></div>
       </section>
     </main>
 
