@@ -1,11 +1,14 @@
 import os
+import subprocess
 import tempfile
 from functools import lru_cache
 from pathlib import Path
+from typing import Annotated
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.concurrency import run_in_threadpool
+from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
 from faster_whisper import WhisperModel
 from google import genai
@@ -121,6 +124,53 @@ async def transcribe(audio: UploadFile = File(...)) -> dict[str, str]:
         await audio.close()
         if temp_path:
             Path(temp_path).unlink(missing_ok=True)
+
+
+def convert_audio_to_mp3(audio: bytes) -> bytes:
+    with tempfile.TemporaryDirectory() as directory:
+        input_path = Path(directory) / "recording"
+        output_path = Path(directory) / "recording.mp3"
+        input_path.write_bytes(audio)
+        try:
+            subprocess.run(
+                [
+                    "ffmpeg", "-nostdin", "-hide_banner", "-loglevel", "error",
+                    "-y", "-i", str(input_path), "-map", "0:a:0", "-vn",
+                    "-codec:a", "libmp3lame", "-b:a", "128k", str(output_path),
+                ],
+                check=True,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                timeout=120,
+            )
+        except FileNotFoundError as error:
+            raise HTTPException(
+                status_code=503,
+                detail="MP3 conversion requires FFmpeg. Install it and add it to PATH, then restart the server.",
+            ) from error
+        except subprocess.TimeoutExpired as error:
+            raise HTTPException(status_code=504, detail="MP3 conversion timed out.") from error
+        except subprocess.CalledProcessError as error:
+            raise HTTPException(status_code=422, detail="The recording could not be converted to MP3.") from error
+        return output_path.read_bytes()
+
+
+@app.post("/api/recording/mp3")
+async def download_mp3(audio: Annotated[UploadFile, File()]) -> Response:
+    try:
+        recording = await audio.read(MAX_AUDIO_SIZE + 1)
+        if len(recording) > MAX_AUDIO_SIZE:
+            raise HTTPException(status_code=413, detail="Recording is too large.")
+        if not recording:
+            raise HTTPException(status_code=400, detail="The recording is empty.")
+        mp3 = await run_in_threadpool(convert_audio_to_mp3, recording)
+        return Response(
+            content=mp3,
+            media_type="audio/mpeg",
+            headers={"Content-Disposition": 'attachment; filename="parlez-recording.mp3"'},
+        )
+    finally:
+        await audio.close()
 
 
 @app.post("/api/analyze")

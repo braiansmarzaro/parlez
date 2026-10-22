@@ -14,8 +14,7 @@ let mediaRecorder;
 let audioChunks = [];
 let timerInterval;
 let startedAt;
-let recordingUrl;
-let recordingExtension;
+let recordingBlob;
 
 function setStatus(message) {
   statusText.textContent = message;
@@ -49,8 +48,7 @@ async function startRecording() {
 
     mediaRecorder = new MediaRecorder(stream, preferredType ? { mimeType: preferredType } : undefined);
     audioChunks = [];
-    if (recordingUrl) URL.revokeObjectURL(recordingUrl);
-    recordingUrl = undefined;
+    recordingBlob = undefined;
     downloadButton.disabled = true;
     mediaRecorder.addEventListener("dataavailable", (event) => {
       if (event.data.size > 0) audioChunks.push(event.data);
@@ -82,9 +80,9 @@ function stopRecording() {
 async function submitRecording(stream) {
   stream.getTracks().forEach((track) => track.stop());
   const mimeType = mediaRecorder.mimeType || "audio/webm";
-  recordingExtension = getAudioExtension(mimeType);
+  const recordingExtension = getAudioExtension(mimeType);
   const recording = new Blob(audioChunks, { type: mimeType });
-  recordingUrl = URL.createObjectURL(recording);
+  recordingBlob = recording;
   downloadButton.disabled = false;
   const formData = new FormData();
   formData.append("audio", recording, `recording.${recordingExtension}`);
@@ -155,12 +153,35 @@ analyzeButton.addEventListener("click", async () => {
   }
 });
 
-downloadButton.addEventListener("click", () => {
-  if (!recordingUrl) return;
+downloadButton.addEventListener("click", async () => {
+  if (!recordingBlob) return;
 
-  const link = document.createElement("a");
-  const timestamp = new Date().toISOString().replaceAll(":", "-").replace(".", "-");
-  link.href = recordingUrl;
-  link.download = `parlez-recording-${timestamp}.${recordingExtension}`;
-  link.click();
+  const recording = recordingBlob;
+  const formData = new FormData();
+  formData.append("audio", recording, `recording.${getAudioExtension(recording.type)}`);
+  downloadButton.disabled = true;
+  downloadButton.textContent = "Converting...";
+
+  try {
+    const response = await fetch("/api/recording/mp3", { method: "POST", body: formData });
+    if (!response.ok) {
+      const result = await response.json();
+      throw new Error(result.detail || "MP3 conversion failed.");
+    }
+
+    const recordingUrl = URL.createObjectURL(await response.blob());
+    const link = document.createElement("a");
+    const timestamp = new Date().toISOString().replaceAll(":", "-").replace(".", "-");
+    link.href = recordingUrl;
+    link.download = `parlez-recording-${timestamp}.mp3`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(recordingUrl), 60_000);
+  } catch (error) {
+    setStatus(error.message || "MP3 download failed. Please try again.");
+  } finally {
+    if (recordingBlob === recording) downloadButton.disabled = false;
+    downloadButton.textContent = "Download MP3";
+  }
 });

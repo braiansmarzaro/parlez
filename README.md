@@ -11,6 +11,16 @@ uv run python main.py
 
 Open <http://127.0.0.1:8000>, allow microphone access, and press **Record**. The first transcription downloads the Whisper model and can take longer than later requests.
 
+After stopping a recording, select **Download MP3** to download it as a 128 kbps MP3, even if transcription fails. Conversion runs locally on the server using FFmpeg and accepts recordings up to 25 MiB.
+
+Install FFmpeg with the `libmp3lame` encoder and make sure `ffmpeg` is on the server's `PATH`. On Windows:
+
+```powershell
+winget install --id Gyan.FFmpeg --exact
+```
+
+Restart your terminal and server after installation. Verify the installation with `ffmpeg -version`. FFmpeg is required only for MP3 downloads, not for transcription.
+
 To enable the French DELF B2 speaking analysis, add your Gemini API key to `.env`:
 
 ```dotenv
