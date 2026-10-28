@@ -21,7 +21,7 @@ GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
 load_dotenv(BASE_DIR / ".env")
 
-app = FastAPI(title="French Transcription")
+app = FastAPI(title="Transcription en français")
 
 DELF_B2_INSTRUCTION = """
 Tu es un examinateur et coach expert du DELF B2, spécialisé dans la production orale.
@@ -108,18 +108,18 @@ async def transcribe(audio: UploadFile = File(...)) -> dict[str, str]:
             while chunk := await audio.read(1024 * 1024):
                 total_size += len(chunk)
                 if total_size > MAX_AUDIO_SIZE:
-                    raise HTTPException(status_code=413, detail="Recording is too large.")
+                    raise HTTPException(status_code=413, detail="L'enregistrement est trop volumineux.")
                 temp_file.write(chunk)
 
         if total_size == 0:
-            raise HTTPException(status_code=400, detail="The recording is empty.")
+            raise HTTPException(status_code=400, detail="L'enregistrement est vide.")
 
         transcript = await run_in_threadpool(transcribe_audio, temp_path)
         return {"transcript": transcript}
     except HTTPException:
         raise
     except Exception as error:
-        raise HTTPException(status_code=500, detail="The recording could not be transcribed.") from error
+        raise HTTPException(status_code=500, detail="L'enregistrement n'a pas pu être transcrit.") from error
     finally:
         await audio.close()
         if temp_path:
@@ -146,12 +146,12 @@ def convert_audio_to_mp3(audio: bytes) -> bytes:
         except FileNotFoundError as error:
             raise HTTPException(
                 status_code=503,
-                detail="MP3 conversion requires FFmpeg. Install it and add it to PATH, then restart the server.",
+                detail="La conversion en MP3 nécessite FFmpeg. Installez-le et ajoutez-le au PATH, puis redémarrez le serveur.",
             ) from error
         except subprocess.TimeoutExpired as error:
-            raise HTTPException(status_code=504, detail="MP3 conversion timed out.") from error
+            raise HTTPException(status_code=504, detail="Le délai de conversion en MP3 a été dépassé.") from error
         except subprocess.CalledProcessError as error:
-            raise HTTPException(status_code=422, detail="The recording could not be converted to MP3.") from error
+            raise HTTPException(status_code=422, detail="L'enregistrement n'a pas pu être converti en MP3.") from error
         return output_path.read_bytes()
 
 
@@ -160,14 +160,14 @@ async def download_mp3(audio: Annotated[UploadFile, File()]) -> Response:
     try:
         recording = await audio.read(MAX_AUDIO_SIZE + 1)
         if len(recording) > MAX_AUDIO_SIZE:
-            raise HTTPException(status_code=413, detail="Recording is too large.")
+            raise HTTPException(status_code=413, detail="L'enregistrement est trop volumineux.")
         if not recording:
-            raise HTTPException(status_code=400, detail="The recording is empty.")
+            raise HTTPException(status_code=400, detail="L'enregistrement est vide.")
         mp3 = await run_in_threadpool(convert_audio_to_mp3, recording)
         return Response(
             content=mp3,
             media_type="audio/mpeg",
-            headers={"Content-Disposition": 'attachment; filename="parlez-recording.mp3"'},
+            headers={"Content-Disposition": 'attachment; filename="parlez-enregistrement.mp3"'},
         )
     finally:
         await audio.close()

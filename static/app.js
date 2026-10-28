@@ -36,7 +36,7 @@ function getAudioExtension(mimeType) {
 
 async function startRecording() {
   if (!navigator.mediaDevices?.getUserMedia || !window.MediaRecorder) {
-    setStatus("Audio recording is not supported in this browser.");
+    setStatus("Ce navigateur ne prend pas en charge l'enregistrement audio.");
     return;
   }
 
@@ -60,11 +60,11 @@ async function startRecording() {
     timer.textContent = "00:00";
     timerInterval = window.setInterval(updateTimer, 1000);
     document.body.classList.add("is-recording");
-    recordLabel.textContent = "Stop";
-    recordButton.setAttribute("aria-label", "Stop recording");
-    setStatus("Listening in French...");
+    recordLabel.textContent = "Arrêter";
+    recordButton.setAttribute("aria-label", "Arrêter l'enregistrement");
+    setStatus("Écoute en français...");
   } catch (error) {
-    setStatus(error.name === "NotAllowedError" ? "Microphone access was denied." : "Could not access your microphone.");
+    setStatus(error.name === "NotAllowedError" ? "L'accès au microphone a été refusé." : "Impossible d'accéder à votre microphone.");
   }
 }
 
@@ -72,8 +72,8 @@ function stopRecording() {
   window.clearInterval(timerInterval);
   document.body.classList.remove("is-recording");
   recordButton.disabled = true;
-  recordLabel.textContent = "Wait";
-  setStatus("Transcribing your recording...");
+  recordLabel.textContent = "Patientez";
+  setStatus("Transcription de votre enregistrement en cours...");
   mediaRecorder.stop();
 }
 
@@ -90,18 +90,18 @@ async function submitRecording(stream) {
   try {
     const response = await fetch("/api/transcribe", { method: "POST", body: formData });
     const result = await response.json();
-    if (!response.ok) throw new Error(result.detail || "Transcription failed.");
+    if (!response.ok) throw new Error(result.detail || "La transcription a échoué.");
 
     transcript.value = result.transcript;
     copyButton.disabled = !result.transcript;
     analyzeButton.disabled = !result.transcript;
-    setStatus(result.transcript ? "Transcript ready" : "No speech was detected. Try again.");
+    setStatus(result.transcript ? "Transcription prête" : "Aucune parole détectée. Veuillez réessayer.");
   } catch (error) {
-    setStatus(error.message || "Transcription failed. Please try again.");
+    setStatus(error instanceof TypeError || error instanceof SyntaxError ? "La transcription a échoué. Vérifiez votre connexion et réessayez." : error.message || "La transcription a échoué. Veuillez réessayer.");
   } finally {
     recordButton.disabled = false;
-    recordLabel.textContent = "Record";
-    recordButton.setAttribute("aria-label", "Start recording");
+    recordLabel.textContent = "Enregistrer";
+    recordButton.setAttribute("aria-label", "Démarrer l'enregistrement");
   }
 }
 
@@ -112,8 +112,8 @@ recordButton.addEventListener("click", () => {
 
 copyButton.addEventListener("click", async () => {
   await navigator.clipboard.writeText(transcript.value);
-  copyButton.textContent = "Copied";
-  window.setTimeout(() => { copyButton.textContent = "Copy"; }, 1400);
+  copyButton.textContent = "Copié";
+  window.setTimeout(() => { copyButton.textContent = "Copier"; }, 1400);
 });
 
 transcript.addEventListener("input", () => {
@@ -146,7 +146,7 @@ analyzeButton.addEventListener("click", async () => {
     analysisSection.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
     analysisStatus.textContent = "Analyse indisponible";
-    analysisOutput.textContent = error.message || "L'analyse a échoué. Veuillez réessayer.";
+    analysisOutput.textContent = error instanceof TypeError || error instanceof SyntaxError ? "L'analyse a échoué. Vérifiez votre connexion et réessayez." : error.message || "L'analyse a échoué. Veuillez réessayer.";
   } finally {
     analyzeButton.disabled = false;
     analyzeButton.textContent = "Analyser à nouveau";
@@ -160,28 +160,28 @@ downloadButton.addEventListener("click", async () => {
   const formData = new FormData();
   formData.append("audio", recording, `recording.${getAudioExtension(recording.type)}`);
   downloadButton.disabled = true;
-  downloadButton.textContent = "Converting...";
+  downloadButton.textContent = "Conversion en cours...";
 
   try {
     const response = await fetch("/api/recording/mp3", { method: "POST", body: formData });
     if (!response.ok) {
       const result = await response.json();
-      throw new Error(result.detail || "MP3 conversion failed.");
+      throw new Error(result.detail || "La conversion en MP3 a échoué.");
     }
 
     const recordingUrl = URL.createObjectURL(await response.blob());
     const link = document.createElement("a");
     const timestamp = new Date().toISOString().replaceAll(":", "-").replace(".", "-");
     link.href = recordingUrl;
-    link.download = `parlez-recording-${timestamp}.mp3`;
+    link.download = `parlez-enregistrement-${timestamp}.mp3`;
     document.body.appendChild(link);
     link.click();
     link.remove();
     window.setTimeout(() => URL.revokeObjectURL(recordingUrl), 60_000);
   } catch (error) {
-    setStatus(error.message || "MP3 download failed. Please try again.");
+    setStatus(error instanceof TypeError || error instanceof SyntaxError ? "Le téléchargement du MP3 a échoué. Vérifiez votre connexion et réessayez." : error.message || "Le téléchargement du MP3 a échoué. Veuillez réessayer.");
   } finally {
     if (recordingBlob === recording) downloadButton.disabled = false;
-    downloadButton.textContent = "Download MP3";
+    downloadButton.textContent = "Télécharger le MP3";
   }
 });

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#f5f1e8">
-    <title>Parlez | French Transcription</title>
+    <title>Parlez | Transcription en français</title>
     <link rel="icon" type="image/svg+xml" href="/french-favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,43 +14,43 @@
   <body>
     <main class="shell">
       <header>
-        <p class="eyebrow">FRENCH SPEECH TO TEXT</p>
+        <p class="eyebrow">TRANSCRIPTION VOCALE EN FRANÇAIS</p>
         <h1>Parlez.</h1>
-        <p class="intro">Record a thought in French. Your words will appear below.</p>
+        <p class="intro">Exprimez une idée en français. Vos mots apparaîtront ci-dessous.</p>
       </header>
 
       <section class="recorder" aria-labelledby="recorder-title">
         <div class="recorder-heading">
           <div>
-            <p class="section-label" id="recorder-title">RECORDER</p>
-            <p class="status" id="status" aria-live="polite">Ready to record</p>
+            <p class="section-label" id="recorder-title">ENREGISTREMENT</p>
+            <p class="status" id="status" aria-live="polite">Prêt à enregistrer</p>
           </div>
           <time id="timer">00:00</time>
         </div>
 
         <div class="record-zone">
           <div class="pulse-ring">
-            <button class="record-button" id="record-button" type="button" aria-label="Start recording">
+            <button class="record-button" id="record-button" type="button" aria-label="Démarrer l'enregistrement">
               <span class="record-icon" aria-hidden="true"></span>
-              <span id="record-label">Record</span>
+              <span id="record-label">Enregistrer</span>
             </button>
           </div>
-          <p class="hint">Press once to start, then again to finish.</p>
+          <p class="hint">Appuyez une fois pour commencer, puis à nouveau pour terminer.</p>
         </div>
       </section>
 
       <section class="transcript-section" aria-labelledby="transcript-title">
         <div class="transcript-heading">
           <div>
-            <p class="section-label">TRANSCRIPT</p>
-            <h2 id="transcript-title">What you said</h2>
+            <p class="section-label">TRANSCRIPTION</p>
+            <h2 id="transcript-title">Ce que vous avez dit</h2>
           </div>
           <div class="transcript-actions">
-            <button class="action-button" id="download-button" type="button" disabled>Download MP3</button>
-            <button class="action-button" id="copy-button" type="button" disabled>Copy</button>
+            <button class="action-button" id="download-button" type="button" disabled>Télécharger le MP3</button>
+            <button class="action-button" id="copy-button" type="button" disabled>Copier</button>
           </div>
         </div>
-        <textarea id="transcript" aria-label="French transcript" placeholder="Votre transcription apparaîtra ici..."></textarea>
+        <textarea id="transcript" aria-label="Transcription en français" placeholder="Votre transcription apparaîtra ici..."></textarea>
         <div class="analysis-controls">
           <p>Corrigez si nécessaire les erreurs de transcription avant de demander l'analyse.</p>
           <button class="analysis-button" id="analyze-button" type="button" disabled>Analyser avec Gemini</button>
@@ -60,7 +60,7 @@
       <section class="analysis-section" id="analysis-section" aria-labelledby="analysis-title" hidden>
         <div class="analysis-heading">
           <div>
-            <p class="section-label">COACH DELF B2</p>
+            <p class="section-label">ACCOMPAGNEMENT DELF B2</p>
             <h2 id="analysis-title">Conseils pour votre prise de parole</h2>
           </div>
           <p class="analysis-status" id="analysis-status" aria-live="polite"></p>
